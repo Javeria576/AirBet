@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "509616967869",
+    "project_id": "airbet-45f9c",
+    "storage_bucket": "airbet-45f9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509616967869:android:54608ba95cd98359c3a7d4",
+        "android_client_info": {
+          "package_name": "com.example.air_bet_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509616967869-n16jjkj0c9tv8oaea0vam4jd7s1gfump.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.air_bet_app",
+            "certificate_hash": "9ee68db8b4c611509cc5912940596b9312fd487d"
+          }
+        },
+        {
+          "client_id": "509616967869-u4qr8n6unukrgbgc0m7o6kkosranc28a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI30BvpOcQaX9TEvdui8OFyiOpMB2Olys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509616967869-0r8n4a71rtah34d7j2fh833prhvdsuvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

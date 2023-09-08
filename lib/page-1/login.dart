@@ -1,7 +1,11 @@
 
+import 'package:air_bet_app/controllers/login_controller.dart';
 import 'package:air_bet_app/page-1/signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../utils.dart';
 import 'create.dart';
@@ -14,12 +18,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _newPasswordVisible = false;
-  final TextEditingController _newController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late LoginController loginController = LoginController();
 
   void _newPasswordVisibility() {
     setState(() {
       _newPasswordVisible = !_newPasswordVisible;
     });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    loginController = context.read<LoginController>();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -41,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Container(
             // iphone14promax128h (1:1240)
             padding:
-                EdgeInsets.fromLTRB(50 * fem, 263 * fem, 50 * fem, 216 * fem),
+                EdgeInsets.fromLTRB(50 * fem, 263 * fem, 50 * fem, 150 * fem),
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
@@ -63,9 +76,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     top: 240 * fem,
                     child: GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return CreateScreen();
-                        },));
+                        RegExp regex = new RegExp(r'^.{6,}$');
+                        RegExp nameRegex = new RegExp(r"^[A-Za-z\s.'-]+$");
+                        if(emailController.text.isEmpty){
+                          showResult("Enter a your email", true);
+                        }
+                        else if(!nameRegex.hasMatch(emailController.text)){
+                          showResult('Enter a valid email', true);
+                        }
+                        else if(_passwordController.text.isEmpty){
+                          showResult("Enter password with minimum length of 6", true);
+                        }
+                        else if(!regex.hasMatch(_passwordController.text)){
+                          showResult('Please enter valid password of minimum 6 characters', true);
+                        }
+                        else{
+                          signIn(emailController.text, _passwordController.text);
+                        }
+
                       },
                       child: Container(
                         width: 264 * fem,
@@ -94,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Positioned(
                     // forgetpasswordvdP (1:1245)
                     left: 208 * fem,
-                    top: 190 * fem,
+                    top: 200 * fem,
                     child: Align(
                       child: SizedBox(
                         width: 88 * fem,
@@ -151,7 +179,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 160 * fem,
                         height: 15 * fem,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+
+                          },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                           ),
@@ -211,6 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+
                   Positioned(
                     // frame68YR (1:1261)
                     left: 33 * fem,
@@ -219,19 +250,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.fromLTRB(
                           17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
                       width: 264 * fem,
-                      height: 30 * fem,
+                      height: 35 * fem,
                       decoration: BoxDecoration(
                         color: Color(0xff1a2c4f),
                         borderRadius: BorderRadius.circular(40 * fem),
                       ),
                       child: TextFormField(
+                        controller: emailController,
+                        maxLines: 1,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize:15,
                         ),
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return ('Please enter your email');
+                          }
+                          if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)){
+                            return ("Please enter a valid email");
+                          }
+                          return null;
+                        },
+                        onSaved:  (value){
+                          emailController.text = value!;
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
+                          isDense: true,
                           prefixIcon: Icon(Icons.email_outlined,size: 15,color: Colors.white,),
-                          contentPadding: EdgeInsets.all(10),
+                          contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                           hintText: 'Email',
                           border: InputBorder.none,
                           hintStyle: SafeGoogleFont(
@@ -254,21 +302,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.fromLTRB(
                           17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
                       width: 264 * fem,
-                      height: 30 * fem,
+                      height: 35 * fem,
                       decoration: BoxDecoration(
                         color: Color(0xff1a2c4f),
                         borderRadius: BorderRadius.circular(40 * fem),
                       ),
                       child: TextFormField(
-                        controller:_newController,
+                        controller:_passwordController,
                         obscureText: !_newPasswordVisible,
+                        maxLines: 1,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15,
                         ),
+                        validator: (value){
+                          RegExp regex = new RegExp(r'^.{6,}$');
+                          if(value!.isEmpty){
+                            return ('Please enter your password');
+                          }
+                          if(regex.hasMatch(value)){
+                            return ('Please enter valid password of minimum 6 characters');
+                          }
+                        },
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.lock,size: 15,color: Colors.white,),
-                          contentPadding: EdgeInsets.all(10),
+                          isDense: true,
+                          contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                           suffixIcon: GestureDetector(
                             onTap: _newPasswordVisibility,
                             child: Icon(_newPasswordVisible?Icons.visibility:Icons.visibility_off,color: Colors.white,size: 18,),
@@ -310,4 +369,31 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  void signIn(String email, String password) async{
+    await _auth.signInWithEmailAndPassword(email: email, password: password).then((uuid) => {
+      Fluttertoast.showToast(msg: "Successfully Login",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.white,
+          textColor: Colors.black),
+      Navigator.push(context, MaterialPageRoute(builder: (context) {return CreateScreen();}
+          ))
+
+    }).catchError((e) {
+      showResult(e.message, true);
+    });
+  }
+
+  void showResult(String? message, bool isErrorMessage) {
+    Fluttertoast.showToast(
+      msg: message ?? "Something went wrong",
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: isErrorMessage ? Colors.red : Colors.green,
+      textColor: Colors.white,
+    );
+  }
+
+
 }

@@ -1,5 +1,9 @@
 
+import 'package:air_bet_app/model/user.dart';
 import 'package:air_bet_app/page-1/registerd.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../utils.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +16,14 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   bool _newPasswordVisible = false;
 
-  final TextEditingController _newController = TextEditingController();
-
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  RegExp nameRegex = new RegExp(r"^[A-Za-z\s.'-]+$");
+  RegExp passwordRegex = new RegExp(r'^.{6,}$');
+  RegExp emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]");
   void _newPasswordVisibility() {
     setState(() {
       _newPasswordVisible = !_newPasswordVisible;
@@ -28,22 +38,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      body: Container(
-        width: double.infinity,
+      body: SingleChildScrollView(
         child: Container(
-          // signuphwX (1:1274)
           width: double.infinity,
-          height: 932*fem,
-          decoration: BoxDecoration (
-            borderRadius: BorderRadius.circular(15*fem),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                // ellipse1rZX (1:1275)
-                left: 0*fem,
-                top: 0*fem,
-                child: Align(
+          child: Container(
+            // signuphwX (1:1274)
+            width: double.infinity,
+            height: 932*fem,
+            decoration: BoxDecoration (
+              borderRadius: BorderRadius.circular(15*fem),
+            ),
+            child: Stack(
+              children: [
+                Align(
                   child: SizedBox(
                     width: 546*fem,
                     height: 546*fem,
@@ -54,12 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                // iphone14promax1nCH (1:1276)
-                left: 0*fem,
-                top: 0*fem,
-                child: Container(
+                Container(
                   padding: EdgeInsets.fromLTRB(50*fem, 263*fem, 50*fem, 170*fem),
                   width: 430*fem,
                   height: 932*fem,
@@ -88,151 +90,142 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        Positioned(
-                      // frame68YR (1:1261)
-                      left: 33 * fem,
-                      top: 100 * fem,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(
-                            17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
-                        width: 264 * fem,
-                        height: 30 * fem,
-                        decoration: BoxDecoration(
-                          color: Color(0xff1a2c4f),
-                          borderRadius: BorderRadius.circular(40 * fem),
-                        ),
-                        child: TextFormField(
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize:15,
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                              17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
+                          width: 264 * fem,
+                          height: 30 * fem,
+                          decoration: BoxDecoration(
+                            color: Color(0xff1a2c4f),
+                            borderRadius: BorderRadius.circular(40 * fem),
                           ),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.person_2_outlined,size: 15,color: Colors.white,),
-                            contentPadding: EdgeInsets.all(10),
-                            hintText: 'User',
-                            border: InputBorder.none,
-                            hintStyle: SafeGoogleFont(
-                              'Poppins',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w500,
-                              height: 1.5 * ffem / fem,
-                              color: Color(0xffffffff),
-                              decoration: TextDecoration.none,
+                          child: TextFormField(
+                            controller: nameController,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:15,
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                        SizedBox(height:28,),
-                        Positioned(
-                      // frame68YR (1:1261)
-                      left: 33 * fem,
-                      top: 100 * fem,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(
-                            17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
-                        width: 264 * fem,
-                        height: 30 * fem,
-                        decoration: BoxDecoration(
-                          color: Color(0xff1a2c4f),
-                          borderRadius: BorderRadius.circular(40 * fem),
-                        ),
-                        child: TextFormField(
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize:15,
-                          ),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.email_outlined,size: 15,color: Colors.white,),
-                            contentPadding: EdgeInsets.all(10),
-                            hintText: 'Email',
-                            border: InputBorder.none,
-                            hintStyle: SafeGoogleFont(
-                              'Poppins',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w500,
-                              height: 1.5 * ffem / fem,
-                              color: Color(0xffffffff),
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                        SizedBox(height:28,),
-                        Positioned(
-                          // frame7Tj7 (1:1266)
-                          left: 33 * fem,
-                          top: 160 * fem,
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                                17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
-                            width: 264 * fem,
-                            height: 30 * fem,
-                            decoration: BoxDecoration(
-                              color: Color(0xff1a2c4f),
-                              borderRadius: BorderRadius.circular(40 * fem),
-                            ),
-                            child: TextFormField(
-                              controller: _newController,
-                              obscureText: !_newPasswordVisible,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.lock_outline,size: 15,color: Colors.white,),
-                                contentPadding: EdgeInsets.all(10),
-                                suffixIcon: GestureDetector(
-                                  onTap: _newPasswordVisibility,
-                                  child: Icon(_newPasswordVisible?Icons.visibility:Icons.visibility_off,color: Colors.white,size: 15,),
-                                ),
-                                hintText: 'Password',
-                                border: InputBorder.none,
-                                hintStyle: SafeGoogleFont(
-                                  'Poppins',
-                                  fontSize: 10 * ffem,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.5 * ffem / fem,
-                                  color: Color(0xffffffff),
-                                  decoration: TextDecoration.none,
-                                ),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.person_2_outlined,size: 15,color: Colors.white,),
+                              isDense: true,
+                              contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 1.0),
+                              hintText: 'User',
+                              border: InputBorder.none,
+                              hintStyle: SafeGoogleFont(
+                                'Poppins',
+                                fontSize: 10 * ffem,
+                                fontWeight: FontWeight.w500,
+                                height: 1.5 * ffem / fem,
+                                color: Color(0xffffffff),
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),
                         ),
                         SizedBox(height:28,),
-                        Positioned(
-                          // frame68YR (1:1261)
-                          left: 33 * fem,
-                          top: 100 * fem,
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                                17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
-                            width: 264 * fem,
-                            height: 30 * fem,
-                            decoration: BoxDecoration(
-                              color: Color(0xff1a2c4f),
-                              borderRadius: BorderRadius.circular(40 * fem),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                              17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
+                          width: 264 * fem,
+                          height: 30 * fem,
+                          decoration: BoxDecoration(
+                            color: Color(0xff1a2c4f),
+                            borderRadius: BorderRadius.circular(40 * fem),
+                          ),
+                          child: TextFormField(
+                            controller: emailController,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:15,
                             ),
-                            child: TextFormField(
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize:15,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 1.0),
+                              prefixIcon: Icon(Icons.email_outlined,size: 15,color: Colors.white,),
+                              hintText: 'Email',
+                              border: InputBorder.none,
+                              hintStyle: SafeGoogleFont(
+                                'Poppins',
+                                fontSize: 10 * ffem,
+                                fontWeight: FontWeight.w500,
+                                height: 1.5 * ffem / fem,
+                                color: Color(0xffffffff),
+                                decoration: TextDecoration.none,
                               ),
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.lock_outline,size: 15,color: Colors.white,),
-                                contentPadding: EdgeInsets.all(10),
-                                hintText: 'Confirm Password',
-                                border: InputBorder.none,
-                                hintStyle: SafeGoogleFont(
-                                  'Poppins',
-                                  fontSize: 10 * ffem,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.5 * ffem / fem,
-                                  color: Color(0xffffffff),
-                                  decoration: TextDecoration.none,
-                                ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height:28,),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                              17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
+                          width: 264 * fem,
+                          height: 30 * fem,
+                          decoration: BoxDecoration(
+                            color: Color(0xff1a2c4f),
+                            borderRadius: BorderRadius.circular(40 * fem),
+                          ),
+                          child: TextFormField(
+                            controller: passwordController,
+                            obscureText: !_newPasswordVisible,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.lock_outline,size: 15,color: Colors.white,),
+                              isDense: true,
+                              contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 1.0),
+                              suffixIcon: GestureDetector(
+                                onTap: _newPasswordVisibility,
+                                child: Icon(_newPasswordVisible?Icons.visibility:Icons.visibility_off,color: Colors.white,size: 15,),
+                              ),
+                              hintText: 'Password',
+                              border: InputBorder.none,
+                              hintStyle: SafeGoogleFont(
+                                'Poppins',
+                                fontSize: 10 * ffem,
+                                fontWeight: FontWeight.w500,
+                                height: 1.5 * ffem / fem,
+                                color: Color(0xffffffff),
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height:28,),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                              17.17 * fem, 8 * fem, 15.54 * fem, 7 * fem),
+                          width: 264 * fem,
+                          height: 30 * fem,
+                          decoration: BoxDecoration(
+                            color: Color(0xff1a2c4f),
+                            borderRadius: BorderRadius.circular(40 * fem),
+                          ),
+                          child: TextFormField(
+                            controller: confirmPasswordController,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:15,
+                            ),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.lock_outline,size: 15,color: Colors.white,),
+                              isDense: true,
+                              contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 1.0),
+                              hintText: 'Confirm Password',
+                              border: InputBorder.none,
+                              hintStyle: SafeGoogleFont(
+                                'Poppins',
+                                fontSize: 10 * ffem,
+                                fontWeight: FontWeight.w500,
+                                height: 1.6 * ffem / fem,
+                                color: Color(0xffffffff),
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),
@@ -279,9 +272,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         GestureDetector(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              return RegisterScreen();
-                            },));
+                            print(nameController.text);
+                            if(nameController.text.isEmpty || !nameRegex.hasMatch(nameController.text)){
+                               showResult("Enter valid a name", true);
+                            }
+                            else if(emailController.text.isEmpty || !emailRegex.hasMatch(emailController.text)){
+                               showResult("Enter valid a email", true);
+                            }
+                            else if(passwordController.text.isEmpty || !passwordRegex.hasMatch(passwordController.text)){
+                               showResult("Enter password with minimum length of 6", true);
+                            }
+                            else if(confirmPasswordController.text.isEmpty || !passwordRegex.hasMatch(passwordController.text)){
+                               showResult("Enter password with minimum length of 6", true);
+                            }
+                            else if (passwordController.text != confirmPasswordController.text){
+                              showResult("Password does not match", true);
+                            }
+                            else {
+                              signUp(emailController.text, passwordController.text);
+                            }
                           },
                           child: Container(
                             // frame12WvD (1:1278)
@@ -340,11 +349,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-            ),
+      ),
+    );
+  }
+
+  void signUp(String email, String password) async{
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
+        .then((value) => {
+          postDetailsToFirestore()
+        }).catchError((e) {
+          showResult(e.toString(), true);
+    });
+  }
+
+  postDetailsToFirestore() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? _currentUser = auth.currentUser;
+    UserModel _userModel = UserModel();
+
+    _userModel.userId = _currentUser?.uid;
+    _userModel.name = _currentUser?.displayName;
+    _userModel.email = _currentUser?.email;
+    try {
+      await firebaseFirestore.collection("user").doc(_currentUser?.uid).set(
+          _userModel.toJson());
+      showResult("Successfully Registered", false);
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return RegisterScreen();
+      },));
+    } catch (e) {
+      showResult(e.toString(), true);
+    }
+  }
+  void showResult(String? message, bool isErrorMessage) {
+    Fluttertoast.showToast(
+      msg: message ?? "Something went wrong",
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: isErrorMessage ? Colors.red : Colors.green,
+      textColor: Colors.white,
     );
   }
 }
