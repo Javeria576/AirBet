@@ -161,6 +161,7 @@ class ForgetpasswordScreen extends StatelessWidget {
                         prefixIcon: Icon(Icons.email_outlined,size: 20,color: Colors.white,),
                         contentPadding: EdgeInsets.all(10*fem),
                         hintText: 'Email',
+
                         border: InputBorder.none,
                         hintStyle: SafeGoogleFont(
                           'Poppins',
@@ -221,4 +222,28 @@ class ForgetpasswordScreen extends StatelessWidget {
       ),
     );
   }
+
+  // void _resetPassword() async {
+  //   final String email = emailController.text.trim();
+  //
+  //   try {
+  //     await _auth.sendPasswordResetEmail(email: email);
+  //
+  //     Fluttertoast.showToast(
+  //       msg: 'Please Check Your Mail',
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.BOTTOM,
+  //       backgroundColor: Colors.green,
+  //       textColor: Colors.white,
+  //     );
+  //   } catch (error) {
+  //     Fluttertoast.showToast(
+  //       msg: 'Must Enter Your Email',
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       textColor: Colors.white,
+  //     );
+  //   }
+  // }
 }
