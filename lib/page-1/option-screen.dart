@@ -1,5 +1,7 @@
+import 'package:air_bet_app/controllers/facebook_sign_in.dart';
 import 'package:air_bet_app/controllers/google_sign_in.dart';
 import 'package:air_bet_app/controllers/login_controller.dart';
+import 'package:air_bet_app/controllers/twitter_sign_in.dart';
 import 'package:air_bet_app/page-1/create.dart';
 import 'package:air_bet_app/page-1/signup.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +24,16 @@ class OptionScreen extends StatefulWidget {
 class _OptionScreenState extends State<OptionScreen> {
 
   late GoogleSignInMethod _googleSignInMethod;
+  late FacebookSignInMethod _facebookSignInMethod;
+  late TwitterSignInMethod _twitterSignInMethod;
 
   @override
   void initState() {
-    // TODO: implement initState
+
     _googleSignInMethod = context.read<GoogleSignInMethod>();
+    _facebookSignInMethod = context.read<FacebookSignInMethod>();
+    _twitterSignInMethod = context.read<TwitterSignInMethod>();
+    // TODO: implement initState
     super.initState();
   }
 
@@ -60,7 +67,7 @@ class _OptionScreenState extends State<OptionScreen> {
                   children: [
                     Container(
                       // autogroupumlvWQh (Bg583QHjWk61FQHYVZUMLV)
-                      margin: EdgeInsets.fromLTRB(22*fem, 0*fem, 22*fem, 71*fem),
+                      margin: EdgeInsets.fromLTRB(22*fem, 0*fem, 5*fem, 0*fem),
                       width: double.infinity,
                       height: 338*fem,
                       child: Stack(
@@ -102,13 +109,19 @@ class _OptionScreenState extends State<OptionScreen> {
                       onTap: (){
                         handleFacebookAuth();
                       },
-                      child: facebookButton(fem, ffem),
+                      child: facebookButtonConsumer(fem, ffem),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        handleTwitterAuth();
+                      },
+                      child: twitterButtonConsumer(fem, ffem)
                     ),
                     GestureDetector(
                       onTap: (){
                        handleGoogleSignIn();
                       },
-                      child: buildGoogleButton(fem, ffem),
+                      child: googleButtonConsumer(fem, ffem),
                     ),
                     GestureDetector(
                       onTap: (){
@@ -228,16 +241,170 @@ class _OptionScreenState extends State<OptionScreen> {
                     );
   }
 
-  // googleButtonConsumer(){
-  //   return Consumer<GoogleSignInMethod>(builder: (context, response, child) {
-  //     if(response.isLoading){
-  //       return CircularProgressIndicator();
-  //     }
-  //     else if(response.isSuccess){
-  //
-  //     }
-  //   });
-  // }
+  googleButtonConsumer(fem, ffem) {
+    return Consumer<GoogleSignInMethod>(builder: (context, response, child) {
+      if(response.isLoading){
+        return Center(
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: CircularProgressIndicator(
+              color: Colors.green,
+            ),
+          ),
+        );
+      }
+      else {
+        response.saveDataToFirestore(response.userModel.userId).then((value) {
+          showResult("Successfully login", false);
+          return handleAfterSignIn();
+        });
+        return buildGoogleButton(fem, ffem);
+      }
+    //   else if(response.hasError){
+    //     showResult(response.errorCode.toString(), true);
+    //     return buildGoogleButton(fem, ffem);
+    //   }
+    //   else{
+    //     response.checkUserExists().then((value) async {
+    //       if (value == true) {
+    //         await response.getUserDataFromFirestore(response.userModel.userId)
+    //             .then((value) {
+    //           showResult("User already exist, Successfully login", false);
+    //           handleAfterSignIn();
+    //         });
+    //       } else {
+    //         response.saveDataToFirestore(response.userModel.userId).then((value) {
+    //           showResult("Successfully login", false);
+    //           handleAfterSignIn();
+    //         });
+    //       }});
+    //   return buildGoogleButton(fem, ffem);
+    // }
+
+    });
+  }
+
+  facebookButtonConsumer(fem, ffem) {
+    return Consumer<FacebookSignInMethod>(builder: (context, response, child) {
+      if(response.isLoading){
+        return Center(
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: CircularProgressIndicator(
+              color: Colors.green,
+            ),
+          ),
+        );
+      }
+      else if(response.hasError){
+        showResult(response.errorCode.toString(), true);
+        return facebookButton(fem, ffem);
+      }
+      else{
+        response.checkUserExists().then((value) async {
+          if (value == true) {
+            await response.getUserDataFromFirestore(response.userModel.userId)
+                .then((value) {
+              showResult("User already exist, Successfully login", false);
+              handleAfterSignIn();
+            });
+          } else {
+            response.saveDataToFirestore(response.userModel.userId).then((value) {
+              showResult("Successfully login", false);
+              handleAfterSignIn();
+            });
+          }});
+        return facebookButton(fem, ffem);
+      }
+
+    });
+  }
+
+  twitterButtonConsumer(fem, ffem) {
+    return Consumer<TwitterSignInMethod>(builder: (context, response, child) {
+      if(response.isLoading){
+        return Center(
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: CircularProgressIndicator(
+              color: Colors.green,
+            ),
+          ),
+        );
+      }
+      else if(response.hasError){
+        showResult(response.errorCode.toString(), true);
+        return buildTwitterButton(fem, ffem);
+      }
+      else{
+        response.checkUserExists().then((value) async {
+          if (value == true) {
+            await response.getUserDataFromFirestore(response.userModel.userId)
+                .then((value) {
+              showResult("User already exist, Successfully login", false);
+              handleAfterSignIn();
+            });
+          } else {
+            response.saveDataToFirestore(response.userModel.userId).then((value) {
+              showResult("Successfully login", false);
+              handleAfterSignIn();
+            });
+          }});
+        return buildTwitterButton(fem, ffem);
+      }
+
+    });
+  }
+
+  Container buildTwitterButton(double fem, double ffem) {
+    return Container(
+      // autogroupqcgrX6q (Bg58Gp54Cd8umsUa8AQcGR)
+      margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 30*fem),
+      padding: EdgeInsets.fromLTRB(98*fem, 12*fem, 80*fem, 12*fem),
+      width: double.infinity,
+      height: 48*fem,
+      decoration: BoxDecoration (
+        color: Color(0xffffffff),
+        borderRadius: BorderRadius.circular(30*fem),
+      ),
+      child: Container(
+        // frame14DkM (1:1093)
+        padding: EdgeInsets.fromLTRB(2*fem, 1*fem, 0*fem, 0*fem),
+        width: double.infinity,
+        height: double.infinity,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              // flatcoloriconsgooglekVP (1:1095)
+              margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 12*fem, 1*fem),
+              width: 22*fem,
+              height: 22*fem,
+              child: Image.asset(
+                'assets/page-1/images/twitter_logo.png',
+                width: 20*fem,
+                height: 20*fem,
+              ),
+            ),
+            Text(
+              'Log In with Twitter',
+              style: SafeGoogleFont (
+                'Poppins',
+                fontSize: 15*ffem,
+                fontWeight: FontWeight.w400,
+                height: 1.5*ffem/fem,
+                color: Colors.lightBlue,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Container buildGoogleButton(double fem, double ffem) {
     return Container(
@@ -286,6 +453,7 @@ class _OptionScreenState extends State<OptionScreen> {
                       ),
                     );
   }
+
   Future handleFacebookAuth() async {
     final sp = context.read<LoginController>();
     final ip = context.read<InternetProvider>();
@@ -293,75 +461,35 @@ class _OptionScreenState extends State<OptionScreen> {
 
     if (ip.hasInternet == false) {
       showResult("Check your internet connection", true);
-      //facebookController.reset();
     } else {
-      await sp.signInWithFacebook().then((value) {
-        if (sp.hasError == true) {
-          print("$sp.errorCode.toString()");
-          showResult(sp.errorCode.toString(), true);
-        //  openSnackbar(context, sp.errorCode.toString(), Colors.red);
-         // facebookController.reset();
-        } else {
-          sp.checkUserExists().then((value) async {
-            if (value == true) {
-              await sp.getUserDataFromFirestore(sp.userModel.userId).then((value) {
-               // facebookController.success();
-                showResult("Successfully login", false);
-                Navigator.push(context, MaterialPageRoute(builder: (context) {return CreateScreen();}));
-              });
-            } else {
-              // user does not exist
-              sp.saveDataToFirestore(sp.userModel.userId).then((value) {
-             //   facebookController.success();
-                showResult("Successfully login", false);
-                Navigator.push(context, MaterialPageRoute(builder: (context) {return CreateScreen();}));
-              });
-            }
-          });
-        }
-      });
+      await sp.signInWithFacebook();
     }
   }
 
-  Future handleGoogleSignIn() async {
-    final sp = context.read<LoginController>();
+  Future handleTwitterAuth() async {
     final ip = context.read<InternetProvider>();
     await ip.checkInternetConnection();
 
     if (ip.hasInternet == false) {
-      showResult(sp.errorCode.toString(), true);
-     // googleController.reset();
+      showResult("Check your Internet connection", true);
     } else {
-      await sp.signInWithGoogle().then((value) {
-        if (sp.hasError == true) {
-          showResult(sp.errorCode.toString(), true);
-        // googleController.reset();
-        } else {
-          sp.checkUserExists().then((value) async {
-            if (value == true) {
-              await sp.getUserDataFromFirestore(sp.userModel.userId)
-                  .then((value) {
-               // googleController.success();
-                showResult("Successfully login", false);
-                Navigator.push(context, MaterialPageRoute(builder: (context) {return CreateScreen();}));
-              });
-            } else {
-              sp.saveDataToFirestore(sp.userModel.userId).then((value) {
-               // googleController.success();
-                showResult("Successfully login", false);
-                Navigator.push(context, MaterialPageRoute(builder: (context) {return CreateScreen();}));
-              });
-            }
-          });
-        }
-      });
+      await _twitterSignInMethod.signInWithTwitter();
     }
   }
 
-  // handle after signin
+  Future handleGoogleSignIn() async {
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      showResult("Kindly check your internet connection", true);
+    } else {
+      await _googleSignInMethod.signInWithGoogle();
+    }
+  }
+
   handleAfterSignIn() {
-    // showResult("Successfully login", false);
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 1), () {
       Navigator.push(context, MaterialPageRoute(builder: (context) {return CreateScreen();}));
     });
   }
@@ -369,7 +497,7 @@ class _OptionScreenState extends State<OptionScreen> {
   void showResult(String? message, bool isErrorMessage) {
     Fluttertoast.showToast(
       msg: message ?? "Something went wrong",
-      toastLength: Toast.LENGTH_LONG,
+      toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: isErrorMessage ? Colors.red : Colors.green,
       textColor: Colors.white,

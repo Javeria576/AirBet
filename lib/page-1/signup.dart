@@ -375,7 +375,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _userModel.name = _currentUser?.displayName;
     _userModel.email = _currentUser?.email;
     try {
-      await firebaseFirestore.collection("user").doc(_currentUser?.uid).set(
+      await firebaseFirestore.collection("users").doc(_currentUser?.uid).set(
           _userModel.toJson());
       showResult("Successfully Registered", false);
       Navigator.push(context, MaterialPageRoute(builder: (context) {

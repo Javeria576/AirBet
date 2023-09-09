@@ -32,9 +32,9 @@ class GoogleSignInMethod extends ChangeNotifier{
     final GoogleSignInAccount? googleSignInAccount =
     await googleSignIn.signIn();
     if (googleSignInAccount != null) {
-      _isLoading = true;
-      notifyListeners();
       try {
+        _isLoading = true;
+        notifyListeners();
         final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
@@ -48,10 +48,10 @@ class GoogleSignInMethod extends ChangeNotifier{
         userModel.userId = userDetails.uid;
 
         _isLoading = false;
-        _isSuccess = true;
         notifyListeners();
       } on FirebaseAuthException catch (e) {
         _isLoading = false;
+        notifyListeners();
         switch (e.code) {
           case "account-exists-with-different-credential":
             _errorCode =
@@ -72,12 +72,12 @@ class GoogleSignInMethod extends ChangeNotifier{
         }
       }
     } else {
+      _isLoading = false;
       _hasError = true;
       notifyListeners();
     }
   }
 
-  // ENTRY FOR CLOUDFIRESTORE
   Future getUserDataFromFirestore(uid) async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -101,7 +101,6 @@ class GoogleSignInMethod extends ChangeNotifier{
     notifyListeners();
   }
 
-  // checkUser exists or not in cloudfirestore
   Future<bool> checkUserExists() async {
     DocumentSnapshot snap =
     await FirebaseFirestore.instance.collection('users').doc(_user.userId).get();

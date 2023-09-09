@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">air_bet_app</string>
 
-    <string name="facebook_app_id"></string>
-    <string name="fb_login_protocol_scheme"></string>
-    <string name="facebook_client_token"></string>
+    <string name="facebook_app_id">346666221026298</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">0c4b7aa4f9cc44ebd9dcb2ea8c94d39d</string>
 
 </resources>

@@ -1,5 +1,8 @@
+import 'package:air_bet_app/controllers/facebook_sign_in.dart';
+import 'package:air_bet_app/controllers/google_sign_in.dart';
 import 'package:air_bet_app/controllers/internet_controller.dart';
 import 'package:air_bet_app/controllers/login_controller.dart';
+import 'package:air_bet_app/controllers/twitter_sign_in.dart';
 import 'package:air_bet_app/controllers/upcoming_events_controller.dart';
 import 'package:air_bet_app/page-1/logo-screen.dart';
 import 'package:air_bet_app/page-1/matches/upcoming_events_screen.dart';
@@ -24,7 +27,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => LoginController()),
         ChangeNotifierProvider(create: (context) => InternetProvider()),
-        ChangeNotifierProvider(create: (create) => UpcomingEventsController(context)),
+        ChangeNotifierProvider(create: (context) => UpcomingEventsController(context)),
+        ChangeNotifierProvider(create: (context) => GoogleSignInMethod()),
+        ChangeNotifierProvider(create: (context) => FacebookSignInMethod()),
+        ChangeNotifierProvider(create: (context) => TwitterSignInMethod()),
       ],
       child: GetMaterialApp(
         title: 'AirBet',

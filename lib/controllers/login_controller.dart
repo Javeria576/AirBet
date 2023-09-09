@@ -18,7 +18,7 @@ class LoginController extends ChangeNotifier{
   final twitterLogin = TwitterLogin(
       apiKey: Config.apikey_twitter,
       apiSecretKey: Config.secretkey_twitter,
-      redirectURI: "socialauth://");
+      redirectURI: "https://localhost//");
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   bool _isSignedIn = false;
@@ -208,6 +208,7 @@ class LoginController extends ChangeNotifier{
       return true;
     } else {
       print("NEW USER");
+      print(userModel.name);
       return false;
     }
   }

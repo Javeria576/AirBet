@@ -77,11 +77,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: GestureDetector(
                       onTap: (){
                         RegExp regex = new RegExp(r'^.{6,}$');
-                        RegExp nameRegex = new RegExp(r"^[A-Za-z\s.'-]+$");
+                        RegExp emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]");
                         if(emailController.text.isEmpty){
                           showResult("Enter a your email", true);
                         }
-                        else if(!nameRegex.hasMatch(emailController.text)){
+                        else if(!emailRegex.hasMatch(emailController.text)){
                           showResult('Enter a valid email', true);
                         }
                         else if(_passwordController.text.isEmpty){
