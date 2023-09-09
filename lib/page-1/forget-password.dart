@@ -160,6 +160,7 @@ class ForgetpasswordScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30 * fem),
                       ),
                       child: TextFormField(
+                        controller: _emailController,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize:15,
@@ -168,7 +169,6 @@ class ForgetpasswordScreen extends StatelessWidget {
                           prefixIcon: Icon(Icons.email_outlined,size: 20,color: Colors.white,),
                           contentPadding: EdgeInsets.all(10*fem),
                           hintText: 'Email',
-
                           border: InputBorder.none,
                           hintStyle: SafeGoogleFont(
                             'Poppins',
