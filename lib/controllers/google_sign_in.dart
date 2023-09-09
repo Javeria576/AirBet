@@ -7,9 +7,6 @@ import '../model/user.dart';
 
 class GoogleSignInMethod extends ChangeNotifier{
 
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
 
@@ -29,18 +26,21 @@ class GoogleSignInMethod extends ChangeNotifier{
   bool get isLoading => _isLoading;
 
   Future signInWithGoogle() async {
-    final GoogleSignInAccount? googleSignInAccount =
-    await googleSignIn.signIn();
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount != null) {
       try {
-        _isLoading = true;
-        notifyListeners();
+        // _isLoading = true;
+        // notifyListeners();
         final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken,
         );
+        _isLoading = true;
+        notifyListeners();
         final User userDetails =
         (await firebaseAuth.signInWithCredential(credential)).user!;
         userModel.name = userDetails.displayName;
@@ -105,19 +105,27 @@ class GoogleSignInMethod extends ChangeNotifier{
     DocumentSnapshot snap =
     await FirebaseFirestore.instance.collection('users').doc(_user.userId).get();
     if (snap.exists) {
+      userSignOut();
       print("EXISTING USER");
       return true;
     } else {
-      print("NEW USER");
+      print("NEW USER For google");
       return false;
     }
   }
 
   Future userSignOut() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
     await firebaseAuth.signOut;
     await googleSignIn.signOut();
 
     _isSignedIn = false;
     notifyListeners();
+  }
+
+  reset(){
+    _isLoading = false;
+    _hasError = false;
   }
 }

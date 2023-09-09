@@ -7,8 +7,6 @@ import '../model/user.dart';
 import '../utilities/config.dart';
 
 class TwitterSignInMethod extends ChangeNotifier{
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
 
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
@@ -28,13 +26,13 @@ class TwitterSignInMethod extends ChangeNotifier{
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  final twitterLogin = TwitterLogin(
-      apiKey: Config.apikey_twitter,
-      apiSecretKey: Config.secretkey_twitter,
-      redirectURI: "https://localhost//");
-
   // sign in with twitter
   Future signInWithTwitter() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final twitterLogin = TwitterLogin(
+        apiKey: Config.apikey_twitter,
+        apiSecretKey: Config.secretkey_twitter,
+        redirectURI: "https://localhost//");
     final authResult = await twitterLogin.loginV2();
     if (authResult.status == TwitterLoginStatus.loggedIn) {
       try {

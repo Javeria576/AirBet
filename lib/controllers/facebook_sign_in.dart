@@ -8,8 +8,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:http/http.dart' as http;
 
 class FacebookSignInMethod extends ChangeNotifier{
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final FacebookAuth facebookAuth = FacebookAuth.instance;
 
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
@@ -30,6 +28,8 @@ class FacebookSignInMethod extends ChangeNotifier{
   bool get isLoading => _isLoading;
 
   Future signInWithFacebook() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final FacebookAuth facebookAuth = FacebookAuth.instance;
     final LoginResult result = await facebookAuth.login();
     // getting the profile
     final graphResponse = await http.get(Uri.parse(
@@ -116,6 +116,8 @@ class FacebookSignInMethod extends ChangeNotifier{
   }
 
   Future userSignOut() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final FacebookAuth facebookAuth = FacebookAuth.instance;
     await firebaseAuth.signOut;
     await facebookAuth.logOut();
 
